@@ -41,8 +41,8 @@
   color: #888;
 }
 
-h1 {
-  paddingTop: 50px;
+.title {
+  margin-bottom: 20px;
 }
 
 .list-item {
