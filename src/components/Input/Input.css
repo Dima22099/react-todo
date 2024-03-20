@@ -1,0 +1,13 @@
+
+.mainInput {
+    border-radius: 5px;
+    background-color: rgb(235, 231, 231);
+    height: 30px;
+    width: 350px;
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.mainInput:hover {
+    background-color: white;
+}
