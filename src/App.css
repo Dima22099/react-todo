@@ -64,3 +64,10 @@ h1 {
   text-decoration: line-through;
   background-color: #60c360;
 }
+
+.rename, .delete {
+    width: 70px;
+    height: 30px;
+    background: #afa7a7;
+    padding: 0;
+}

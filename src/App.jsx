@@ -38,9 +38,24 @@ function App() {
   const deleteItem = (id) => {
     setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
   }
+
+  const renameDate = (id, title) => {
+    setTodos((prevTodos) => prevTodos.map((todo) => {
+      if (todo.id === id) {
+        setInputValue(title);
+        todo.title = inputValue;
+        
+        return {... todo, }
+        
+      }
+      return todo;
+    }))
+  }
+
+
   return (
     <>
-      <h1 className={'h1'}>Todo list </h1>
+      <h1 className='h1'>Todo list </h1>
       <h4>total tasks {todos.length}</h4>
       <Input value={inputValue}  onChange={handleInputChange} />
       <Button label={'add'} onClick={addItems} />
@@ -52,7 +67,8 @@ function App() {
             <span onClick={() => toggleTodo(id)} 
               className={`list-title ${completed ? 'completed': ''}`}>{title}</span>
 
-            <Button onClick={() => deleteItem(id)} label={'delete'} />
+            <Button className="rename" label={'ren task'} onClick={() => renameDate(id, title)}/>
+            <Button className="delete" onClick={() => deleteItem(id)} label={'delete'} />
           </p>
           )}
       </div>
@@ -60,4 +76,7 @@ function App() {
   )
 }
 
-export default App
+export default App;
+
+
+
