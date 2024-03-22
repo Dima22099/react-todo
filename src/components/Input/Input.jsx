@@ -1,9 +1,12 @@
 import './Input.css'
 
-const Input = ({ value, onChange }) => {
+export const Input = ({ value, onChange }) => {
     return (
-        <input type='text' placeholder={" enter a task"} className="mainInput"
-         value={value} onChange={onChange} /> 
+        <input 
+        type='text' 
+        value={value} 
+        className="mainInput"
+        placeholder={" enter a task"} 
+        onChange={onChange} autoFocus/> 
     );
 }
-export default Input;

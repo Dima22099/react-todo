@@ -1,0 +1,12 @@
+.button {
+    width: 100px;
+    height: 40px;
+    background: #afa7a7;
+    padding: 0px;
+    margin: 5px;
+}
+
+
+.selected {
+    background-color: rgb(15, 84, 211);
+}

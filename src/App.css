@@ -41,14 +41,33 @@
   color: #888;
 }
 
-h1 {
-  paddingTop: 50px;
+.title {
+  top: 50px;
+  font-size: 3.2em;
+  line-height: 1.1;
+  position: absolute;
+}
+.inputRename {
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 295px;
+  margin: 1px;
+  border-radius: 5px;
+  background-color: #749dc9;
+}
+
+.totalTodo {
+  position: absolute;
+  top: 140px;
+  left: 750px;
 }
 
 .list-item {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin: 2px;
+  min-width: 520px;
 }
 
 .list-title {
@@ -65,9 +84,11 @@ h1 {
   background-color: #60c360;
 }
 
-.rename, .delete {
-    width: 70px;
-    height: 30px;
-    background: #afa7a7;
-    padding: 0;
+.buttonsCategores {
+  padding-right: 100px;
+}
+
+.items {
+  max-width: 530px;
+  max-height: 500px;
 }

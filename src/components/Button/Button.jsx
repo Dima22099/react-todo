@@ -1,7 +1,9 @@
-const Button = ({ onClick, label, className, onChange, renameDate}) => {
+import './Button.css';
+
+export const Button = ({ onClick, label, selected }) => {
     return (
-        <button className={`button ${className}`} onClick={onClick}>{label}
+        <button className={`button ${selected ? 'selected' : ''}`} onClick={onClick}>
+            {label}
         </button>
     )
 };
-export default Button;
