@@ -1,106 +1,68 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
+import { useSelector, useDispatch } from'react-redux';
 
-import { Input, Button }  from './components';
+import { addTodo, deleteTodo, toggleTodo,  renameTodo, toggleEdit, filteredTodos } from './store/slices/todoSlices';
+
+import { Input, Button } from './components';
 
 import './App.css'
+// 1-добавить в state поле фильтр//////////////
+
+// 2-создать action который будет менять поле фильтр
+
+// 3-при нажатие на кнопки должен меняться фильтр.
+
+// 4-в компоненте app, отфильтровать todos в зависимости от текущего фильтра (поместить в новую переменную)
+
+// 5-отобразить в компоненте отфильтрованные
+
+// 6- прислать как будет выглядить стейт в приложение кинопоиска 
 
 const App = () =>  {
-  const [todos, setTodos] = useState([]);
-  const [showTodos, setShowTodos] = useState([]);
-
-  const [filter, setFilter] = useState('all'); 
   const [inputValue, setInputValue] = useState('');
 
-  const [renameInput, setRenameInput] = useState('');
-  const [renameInputId, setRenameInputId] = useState(null);
+  const { todos, filter } = useSelector(state => state.todos)
+  const dispatch = useDispatch();
 
-  const inputRef = useRef();
-
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  }
-
-  const addTodo = (e) => {
+  const addItem = (e) => {
     e.preventDefault();
-    if (inputValue === '') {
-      return;
-    }
-
-    let trimmedTitle = inputValue;
-    if (inputValue.length > 30) {
-      trimmedTitle = inputValue.slice(0, 30) + ' ...';
-    }
-
-    setTodos((prevTodos) => [...prevTodos, { 
-      id: crypto.randomUUID(),
-      title: trimmedTitle,
-      completed: false
-    }]);
+    dispatch(addTodo(inputValue)); 
     setInputValue('');
-  }
-  
-  const toggleTodo = (id) => {
-    setTodos((prevTodos) => prevTodos.map((todo) => {
-      if (todo.id === id) {
-        return {...todo, completed: !todo.completed};
-      }
-      return todo;
-    }))
   };
 
   const deleteItem = (id) => {
-    setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
+    dispatch(deleteTodo(id));
   };
 
-  const handleRemaneInput = (e) => {
-    setRenameInput(e.target.value);
+  const toggleItem = (id) => {
+    dispatch(toggleTodo(id));
   };
 
-  const toggleEditing = (id) => {
-    if (renameInputId) {
-      setTodos((prevTodos) => prevTodos.map((el) => {
-        if (el.id === id) {
-          return {...el, title: renameInput};
-        }
-
-        return el;
-      }));
-      setRenameInput('');
-      setRenameInputId(null);
-    } else {
-      const { title } = todos.find((el) => el.id === id)
-      setRenameInputId(id);
-      setRenameInput(title);
-
-      setTimeout(() => {
-      inputRef.current.focus();
-      })
-    }
+  const toggleEditItem = (id) => {
+    dispatch(toggleEdit(id));
   };
 
-  useEffect(() => {
-    switch (filter) {
-      case 'all':
-        setShowTodos([...todos]);
-        break;
-      case 'completed': 
-        setShowTodos(todos.filter((el) => el.completed));
-        break;
-      case 'notCompleted': 
-        setShowTodos(todos.filter((el) => !el.completed));
-        break;
-      default: 
-        return null;
-    }
-  }, [todos, filter]);  
+  const filteredTodo = todos.filter(todo => {
+    if (filter === 'completed') {
+      return todo.completed;
+    } else if (filter === 'notCompleted') {
+      return !todo.completed;
+    } 
+    return true;
+  })
+
+// Только добавили задачу --- todos: [{ tile: «Выучить React», id: ‘123-31-23-123’, completed: false, edit: false }]
+// Нажали на кнопку редактировать - текс задачи превратился в input - [{ tile: «Выучить React», id: ‘123-31-23-123’, completed: false, edit: TRUE }]
+// Изменили значение в input ToDo - текст поменялся и input и в redux -[{ tile: «Выучить React в мае», id: ‘123-31-23-123’, completed: false, edit: TRUE }]  
+// Нажали еще раз на кнопку редактировать - input превратился в span - [{ tile: «Выучить React в мае», id: ‘123-31-23-123’, completed: false, edit: false }]
  
   return (
     <>
       <h1 className='title'>Todo list</h1>
       <h4 className='totalTodo'>total tasks {todos.length}</h4>
 
-      <form onSubmit={addTodo}>
-        <Input value={inputValue} onChange={handleInputChange} />
+      <form onSubmit={addItem}>
+        <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
         <Button type="submit" label={'add'} className='showButton'/>
       </form>
 
@@ -108,44 +70,41 @@ const App = () =>  {
         <Button 
           label={'show all tasks'}
           selected={filter == 'all'}
-          onClick={() => setFilter('all')}
-
+          onClick={() => dispatch(filteredTodos('all'))}
         />
         <Button 
           label={'show completed'}
           selected={filter == 'completed'}
-          onClick={() => setFilter('completed')} 
+          onClick={() => dispatch(filteredTodos('completed'))} 
           />
         <Button 
           label={'show not completed'}
           selected={filter === 'notCompleted'} 
-          onClick={() => setFilter('notCompleted')} 
+          onClick={() => dispatch(filteredTodos('notCompleted'))} 
         />
       </div>
 
       <div className="items">
-        {showTodos.map(({ id, title, completed }, index) => 
+        {filteredTodo.map(({ id, title, completed, edit }, index) => 
           <div className='list-item' key={id}>
             <span>{index + 1}</span>
-
-            {renameInputId === id ? (
+            {edit ? (
               <input
                 className='inputRename'
-                ref={inputRef}
                 type='text'
-                value={renameInput}
-                onChange={handleRemaneInput}
+                value={title}
+                onChange={(e) => dispatch(renameTodo({id, title: e.target.value}))}
               />
             ) : (
               <span
-                onClick={() => toggleTodo(id)}
+                onClick={() => toggleItem(id)}
                 className={`list-title ${completed ? 'completed' : ''}`}
               >
                 {title}
               </span>
             )}
 
-            <Button label={'rename'} onClick={() => toggleEditing(id)}/>
+            <Button label={'rename'} onClick={() => toggleEditItem(id)}/>
             <Button label={'delete'} onClick={() => deleteItem(id)} />
           </div>
         )}
